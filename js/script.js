@@ -2,7 +2,7 @@ let input = document.querySelector('input[name=tarefa]'); // referenciar o input
 let btn = document.querySelector('#botao'); // referenciando o button 
 let list = document.querySelector('#lista'); // referenciando a lista 
 
-let tarefas = []
+let tarefas = JSON.parse(localStorage.getItem('tarefas'));
 
 
 function renderizarTarefas(){
@@ -11,6 +11,11 @@ function renderizarTarefas(){
     for(tarefa of tarefas){
         // criar o item da lista
         let itemList = document.createElement('li');
+
+        //add evento de click no item da lista 
+        itemList.onclick = function(){
+            removeTarefa(this); 
+        }
 
         // add classes no item list
         itemList.setAttribute('class', 'list-group-item list-group-item-action');
@@ -47,6 +52,9 @@ btn.onclick = function(){
 
         //remover mensagens de erro (spans)
         removeSpans();
+
+        // salvar os novos dados no DB
+        saveInStorage();
     }else{
         removeSpans();
         let card = document.querySelector('.card'); 
@@ -72,4 +80,18 @@ function removeSpans(){
     for(let i = 0; i < spans.length; i++){
         card.removeChild(spans[i]);
     }
+}
+function removeTarefa(tar){
+    // remove a terefa do array
+    tarefas.splice(tarefas.indexOf(tar.textContent),1);
+
+    // renderizar novamente a tela
+    renderizarTarefas();
+}
+
+// função para salvar dados na storage do navegador 
+function saveInStorage(){
+    // acessa o storage do navegador passando 2 parametros 1.Banco de dados, 2. itens inseridos no DB
+    localStorage.setItem('tarefas',JSON.stringify(tarefas)); // JSON.stringfy - converte valorem em Js para uma string JSON
+
 }
